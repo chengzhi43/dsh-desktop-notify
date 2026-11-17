@@ -36,14 +36,16 @@
       },
       "versions": [
         {
-          "version": "1.0.3",
-          "publishTimestamp": 1794902187,
+          "version": "1.0.4",
+          "publishTimestamp": 1794909462,
           "source": {
             "type": "git",
             "url": "https://github.com/chengzhi43/dsh-desktop-notify",
-            "commit": "7827a079e35cc0c98bf5f680179919ab15288a0a"
+            "commit": "c2eb92a661ec099be9482b9a7b46965d2bd0d9ab"
           },
-          "engines": {}
+          "engines": {
+            "dsh": ">=0.2.2-rc.3"
+          }
         }
       ]
     }
