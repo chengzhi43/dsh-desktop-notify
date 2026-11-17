@@ -1,6 +1,6 @@
 {
   "name": "dsh-desktop-notify",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Desktop notifications for DeepSeek Harness: a turn finished, or the agent is waiting for your choice",
   "license": "MIT",
   "author": "chengzhi43",
@@ -34,7 +34,10 @@
     "locale/*.json",
     "icon.svg",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "docs",
+    "README_CN.md",
+    "CHANGELOG.md"
   ],
   "dsh": {
     "bundle": {

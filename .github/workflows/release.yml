@@ -24,7 +24,8 @@ jobs:
       - name: Pack installable bundle
         run: |
           zip -r dsh-desktop-notify.zip \
-            package.json index.js client.js cordis.patch.yml icon.svg README.md LICENSE locale
+            package.json index.js client.js cordis.patch.yml icon.svg \
+            README.md README_CN.md CHANGELOG.md LICENSE locale docs
       - name: Publish GitHub release
         uses: softprops/action-gh-release@v2
         with:

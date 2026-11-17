@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.2
+
+- English README with a hero title, badges, and a Star entry point; Chinese moved to `README_CN.md` with a
+  first-screen language switch and a sync marker.
+- Windows verification moved out of the README into `docs/WINDOWS-VERIFICATION.md`.
+- The released zip now carries the bilingual README, the changelog, and `docs/`, so the plugin page shows the
+  same document as the repository.
+
 ## 1.0.1
 
 - Warn once in the console when system notifications are unsupported or denied, so a platform without

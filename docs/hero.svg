@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320" role="img" aria-label="dsh-desktop-notify">
+  <defs>
+    <linearGradient id="dn-hero-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B1424" />
+      <stop offset="0.55" stop-color="#111C2E" />
+      <stop offset="1" stop-color="#0B1424" />
+    </linearGradient>
+    <linearGradient id="dn-hero-tile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1B2942" />
+      <stop offset="1" stop-color="#131E31" />
+    </linearGradient>
+    <linearGradient id="dn-hero-bell" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E8EEFA" />
+      <stop offset="1" stop-color="#AFC0DA" />
+    </linearGradient>
+    <radialGradient id="dn-hero-glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#3E6BA8" stop-opacity="0.42" />
+      <stop offset="1" stop-color="#3E6BA8" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="320" rx="32" fill="url(#dn-hero-bg)" />
+  <ellipse cx="293" cy="160" rx="190" ry="150" fill="url(#dn-hero-glow)" />
+  <rect x="221" y="88" width="144" height="144" rx="40" fill="url(#dn-hero-tile)" stroke="#2C3E5C" stroke-width="2" />
+  <g transform="translate(245 112) scale(2.4)">
+    <path fill="url(#dn-hero-bell)" d="M18 4.2c-4.3 0-7.4 3.2-7.4 7.5v4.3l-1.8 3.2c-.5.9.15 1.95 1.2 1.95h16c1.05 0 1.7-1.05 1.2-1.95L24.4 16v-4.3c0-4.3-3.1-7.5-7.4-7.5z" />
+    <circle cx="18" cy="23.2" r="2.1" fill="#E08D3C" />
+  </g>
+  <text x="409" y="182" font-family="-apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="64" font-weight="700" fill="#EAF1FC" letter-spacing="-1.2">dsh-desktop-notify</text>
+  <g fill="#3F5C86">
+    <rect x="413" y="208" width="232" height="6" rx="3" opacity="0.9" />
+    <rect x="657" y="208" width="92" height="6" rx="3" opacity="0.5" />
+  </g>
+  <circle cx="1092" cy="120" r="5" fill="#E08D3C" opacity="0.9" />
+  <circle cx="1136" cy="196" r="3.5" fill="#4C6690" opacity="0.75" />
+  <circle cx="1052" cy="212" r="3.5" fill="#4C6690" opacity="0.5" />
+</svg>
