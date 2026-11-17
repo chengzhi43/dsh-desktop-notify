@@ -39,6 +39,10 @@ for (const plugin of index.plugins) {
     assert.equal(version.source?.type, 'git', `${plugin.name}: this repository publishes Git sources`)
     assert.equal(version.source.url, REPOSITORY, `${plugin.name}: source url must be the canonical repository URL`)
     assert.match(version.source.commit, COMMIT, `${plugin.name}: commit must be a lowercase 40-hex SHA`)
+    if (version.engines?.dsh !== undefined) {
+      assert.equal(typeof version.engines.dsh, 'string', `${plugin.name}: engines.dsh must be a range string`)
+      assert.ok(version.engines.dsh.trim() !== '', `${plugin.name}: engines.dsh must not be empty`)
+    }
   }
   if (plugin.name === pkg.name) {
     assert.ok(

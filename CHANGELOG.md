@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.4
+
+- Install section split into numbered methods with headings, and both install text and limitations rewritten
+  in a formal register.
+- States the version requirement: DeepSeek Harness desktop 0.2.2-rc.3 or newer, the release this plugin was
+  built and verified on. The index entry now declares the same range in `engines.dsh`.
+
 ## 1.0.3
 
 - `index.json`: a plugin-market index for this repository, so DSH can install the plugin from a link

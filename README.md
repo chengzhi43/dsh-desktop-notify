@@ -10,7 +10,7 @@
 
 <h1>dsh-desktop-notify</h1>
 
-<p><strong>A DeepSeek Harness session runs in the background. You find out when it is done, or when it needs you.</strong></p>
+<p><strong>DeepSeek Harness sessions run in the background. The plugin reports the two moments that need you: the turn finished, or the agent is waiting for your choice.</strong></p>
 
 <p>
   <a href="https://github.com/chengzhi43/dsh-desktop-notify/stargazers"><img src="https://img.shields.io/badge/Star-this%20repository-2F6FEB?style=flat-square" alt="Star this repository"></a>
@@ -23,42 +23,53 @@
   <a href="https://github.com/deepseek-ai/deepseek-harness"><img src="https://img.shields.io/badge/DSH-plugin-2F6FEB?style=flat-square" alt="DeepSeek Harness plugin"></a>
 </p>
 
-<p>If it saves you one context switch a day, a star helps the next person find it.</p>
+<p>A star helps the next person who needs this plugin find it.</p>
 
 </div>
 
-A turn takes minutes. You switch to another window, and the two moments that matter happen while you are looking somewhere else: the turn ends, or the agent stops and waits for an answer. This plugin puts both in the system notification center. Click one and you land back in that conversation.
+A session commonly runs for several minutes. While the window is in the background, two events matter: the turn finishes, or the agent stops and waits for an answer. The plugin delivers both through the system notification center, and a click returns to that conversation.
 
-It is a client-side bundle: one folder, no dependencies, no build step, no network calls, nothing written to disk.
+It is a client-side bundle: one directory, no dependencies, no build step, no network requests, and nothing written to disk.
 
-## What shows up
+## Notification content
 
-| When | Body | Click |
+| Event | Body | Click |
 | --- | --- | --- |
 | A turn finishes | `<conversation> · finished` | Opens that conversation |
 | A question, approval, plan review, or action card starts waiting | `<conversation> · waiting for your choice` | Opens that conversation |
 
-The title is always `DeepSeek Harness`; the body carries the conversation name and the state. The state text follows the app language, eight of them so far. Subagent conversations never notify, and a pending request that gets republished does not announce twice.
+The title is always `DeepSeek Harness`; the body carries the conversation name and the state. The state text follows the application language, currently eight of them. Subagent conversations are excluded, and a pending request that is published again does not produce a second notification.
 
 ## Install
 
-Two ways. Take whichever is less work for you.
+Two methods are available. Either one produces the same plugin directory.
 
-Add the index link. In DSH open **Plugins → Discover → Add index source** and paste:
+### Option 1: install from the index link
+
+1. In DSH, open **Plugins → Discover → Add index source**.
+2. Paste the index URL:
 
 ```text
 https://raw.githubusercontent.com/chengzhi43/dsh-desktop-notify/main/index.json
 ```
 
-The list then shows `dsh-desktop-notify`, with an install button. Each entry pins a commit, so you install exactly what the index lists. The same file is readable at [index.json](https://raw.githubusercontent.com/chengzhi43/dsh-desktop-notify/main/index.json) if you want to check it first.
+3. The list now contains `dsh-desktop-notify`. Choose Install. Every entry pins a commit, so the installed files match the listed version.
+4. Allow notifications in the system settings, as described below.
 
-Or unzip the bundle. Grab `dsh-desktop-notify.zip` from the [latest release](https://github.com/chengzhi43/dsh-desktop-notify/releases/latest), unzip it somewhere it can stay, then use **Plugins → Add plugin** and pick that folder. It is the one with `package.json` at its root. Reload the window once with `Cmd/Ctrl + R`.
+The index file can be inspected directly at [index.json](https://raw.githubusercontent.com/chengzhi43/dsh-desktop-notify/main/index.json).
 
-Either way, let the system deliver the notifications: macOS **System Settings → Notifications → DeepSeek Harness**, Windows **Settings → System → Notifications**.
+### Option 2: install from the bundle directory
 
-Platform checks, including the open Windows toast question, live in [docs/WINDOWS-VERIFICATION.md](./docs/WINDOWS-VERIFICATION.md).
+1. Download `dsh-desktop-notify.zip` from the [latest release](https://github.com/chengzhi43/dsh-desktop-notify/releases/latest).
+2. Unzip it into a directory that can remain in place.
+3. In DSH, open **Plugins → Add plugin** and select that directory. Its root must contain `package.json`.
+4. Reload the window with `Cmd/Ctrl + R`.
 
-## How it reads state
+For both methods, the operating system must permit notifications from the application: macOS **System Settings → Notifications → DeepSeek Harness**, Windows **Settings → System → Notifications**.
+
+Platform verification, including the open Windows toast question, is recorded in [docs/WINDOWS-VERIFICATION.md](./docs/WINDOWS-VERIFICATION.md).
+
+## How it works
 
 ```text
 DSH client (open page)
@@ -69,21 +80,21 @@ DSH client (open page)
   fallback: sessions.list          running state only, completions still announced
 ```
 
-The plugin keeps one small map in memory and compares every snapshot with the previous one. `running` going from true to false means a finished turn; a new pending-interaction key means the app wants an answer from you. Nothing is persisted, and unloading the bundle drops the subscription.
+The plugin keeps a small map in memory and compares each snapshot with the previous one. A `running` value that changes from true to false indicates a finished turn; a new pending-interaction key indicates that the application expects an answer. No state is persisted, and unloading the bundle removes the subscription.
 
-It reads what the app already publishes, the same status behind the sidebar spinner and the composer's pending panel. That is also why approval prompts and plan reviews show up: they share that status, so they do not need their own code here.
+The state it reads is the one the application already publishes, the same source behind the sidebar indicator and the pending panel in the composer. Approval prompts and plan reviews are covered for that reason: they share this status, so no separate handling is required.
 
-## Where it stops
+## Requirements and limits
 
-- Full coverage needs a DSH build that exposes `uiSession.sessionStatus`. Older builds fall back to the conversation list, which only knows running state, so those get completion notifications and nothing else.
-- Notifications come from the open page. Close the window or quit the app and nothing is sent, even though the turn keeps running on the host.
-- No sound setting, no per-conversation mute, no quiet hours. One pending request announces once.
-- Linux depends on the desktop notification daemon, including whether it reports clicks back to Electron.
-- In a browser tab the first notification goes through the browser permission prompt.
-- On Windows a window hidden in the tray may not come forward on click. Raising it needs a `dsh://open` call, which this plugin does not make.
-- No model-facing text, no telemetry, no credential reads.
+- DeepSeek Harness desktop 0.2.2-rc.3 or newer. That is the release this plugin was developed and verified on, and the bundled runtime reports the same version. Earlier builds have not been tested; a build without `uiSession.sessionStatus` falls back to the conversation list and then reports completions only, without the waiting state.
+- Notifications originate from the open page. When the window is closed or the application quits, no notification is delivered, although the session continues to run on the host.
+- There is no sound setting, no per-conversation mute, and no quiet hours. A pending request notifies once, and repeated publication of the same state stays silent.
+- On Linux, delivery depends on the desktop notification service and on whether it reports clicks back to Electron.
+- In a browser tab, the first notification passes through the browser permission prompt.
+- On Windows, a window minimized to the tray may not come forward on click. Raising it requires a `dsh://open` call, which this plugin does not make.
+- The plugin adds no model-facing text, sends no telemetry, and reads no credentials.
 
-## Try it locally
+## Local verification
 
 ```bash
 git clone https://github.com/chengzhi43/dsh-desktop-notify.git
@@ -92,14 +103,14 @@ node --check client.js
 node test/harness.cjs
 ```
 
-The harness stubs the client services, so it runs without a DOM, Electron, or DSH. It checks completion, pending choice, duplicate suppression, subagent silence, click navigation, teardown, and the fallback path. CI runs the same two commands on Linux. The index file is validated too; see [.github/workflows/checks.yml](./.github/workflows/checks.yml).
+The harness replaces the client services with stubs, so it runs without a DOM, Electron, or DSH. It covers completion, pending choice, duplicate suppression, subagent exclusion, click navigation, teardown, and the fallback path. CI runs the same commands on Linux and validates the index file; see [.github/workflows/checks.yml](./.github/workflows/checks.yml).
 
 ## Contributing
 
-Issues in Chinese or English are both fine. If you send code, keep the bundle dependency-free and client-side, keep the status diff as the only source of state, and add a line to [CHANGELOG.md](./CHANGELOG.md). A new kind of notification usually means the app gained a new pending interaction, not that this plugin needs more code.
+Issues in Chinese or English are both acceptable. For code changes: keep the bundle dependency-free and client-side, keep the status comparison as the only source of state, and add an entry to [CHANGELOG.md](./CHANGELOG.md). A new kind of notification usually means the application gained a new pending interaction rather than that this plugin needs more code.
 
 ## License
 
-[MIT](./LICENSE). Use it, fork it, ship it inside your own setup.
+[MIT](./LICENSE). Use, fork, and redistribute it inside your own setup.
 
-If it is useful: star the repo, watch releases for updates, and open an issue when a notification is missing or noisy.
+If the plugin is useful: star the repository, watch releases for updates, and open an issue when a notification is missing or repeatedly noisy.
