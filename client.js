@@ -46,10 +46,26 @@ window.__ModuleLoader__.load({
       }
     }
 
+    /** Reasons already reported, so a blocked platform warns once, not per turn. */
+    const warned = new Set()
+
+    /** Report a blocking condition once, keeping the console usable. */
+    function warnOnce(ctx, reason, message) {
+      if (warned.has(reason)) return
+      warned.add(reason)
+      ctx.logger?.warn?.(`desktop-notify: ${message}`)
+    }
+
     /** Raise one system notification and wire its click to conversation navigation. */
     function announce(ctx, uiWorkspace, body, sessionId) {
-      if (typeof Notification === 'undefined') return
-      if (Notification.permission === 'denied') return
+      if (typeof Notification === 'undefined') {
+        warnOnce(ctx, 'unsupported', 'this Client has no system notification API')
+        return
+      }
+      if (Notification.permission === 'denied') {
+        warnOnce(ctx, 'denied', 'notifications are blocked; allow DeepSeek Harness in the system settings')
+        return
+      }
       const show = () => {
         try {
           // No `icon`: every platform already attributes the notification to this

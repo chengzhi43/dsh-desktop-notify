@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.1
+
+- Warn once in the console when system notifications are unsupported or denied, so a platform without
+  notifications (for example a Windows machine whose shortcut lacks an AppUserModelID) is diagnosable.
+
 ## 1.0.0
 
 - System notification when a conversation finishes a turn.
