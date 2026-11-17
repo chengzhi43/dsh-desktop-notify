@@ -6,11 +6,11 @@
 
 <div align="center">
 
-<img src="./docs/hero.svg" width="760" alt="dsh-desktop-notify —— 圆角底板上的一枚铃铛与项目名称">
+<img src="./docs/hero.svg" width="760" alt="dsh-desktop-notify：圆角底板上的一枚铃铛与项目名">
 
 <h1>dsh-desktop-notify</h1>
 
-<p><strong>给 DeepSeek Harness 加系统通知：回合跑完了告诉你，智能体停下来等你也告诉你。</strong></p>
+<p><strong>DeepSeek Harness 在后台跑，你要知道它什么时候跑完，什么时候在等你。</strong></p>
 
 <p>
   <a href="https://github.com/chengzhi43/dsh-desktop-notify/stargazers"><img src="https://img.shields.io/badge/Star-this%20repository-2F6FEB?style=flat-square" alt="给这个仓库点 Star"></a>
@@ -23,41 +23,42 @@
   <a href="https://github.com/deepseek-ai/deepseek-harness"><img src="https://img.shields.io/badge/DSH-plugin-2F6FEB?style=flat-square" alt="DeepSeek Harness 插件"></a>
 </p>
 
-<p>如果它每天帮你少切一次窗口，点个 Star，别人也能搜到它，我也更有动力继续维护。</p>
+<p>如果它每天帮你少切一次窗口，点个 Star，下一个人也能搜到。</p>
 
 </div>
 
-DeepSeek Harness 的一个回合往往要跑好几分钟。你切去别的窗口，它跑完的那一刻、或者它停住等你回答的那一刻，就发生在你没看的地方。这个插件把这两个时刻交给系统通知，点一下就能回到那场对话。
+一个回合要跑好几分钟。你切去别的窗口，真正需要你的两个时刻就发生在别处：回合跑完了，或者智能体停下来等你回答。这个插件把这两件事送进系统通知中心，点一下就回到那场对话。
 
-它只是一个客户端侧的 DSH 插件：一个文件夹，没有依赖、没有构建步骤、不联网，也不往磁盘写东西。
+它只是个客户端插件：一个文件夹，没有依赖、不用构建、不联网，也不往磁盘写东西。
 
-## 你会得到什么
+## 会弹什么
 
-| 时刻 | 通知正文 | 点击之后 |
+| 什么时候 | 正文 | 点击 |
 | --- | --- | --- |
-| 回合结束 | `<会话标题> · 已完成` | 打开这场对话 |
-| 提问、审批、计划确认或操作卡片开始等你 | `<会话标题> · 等待你的选择` | 打开这场对话 |
+| 回合结束 | `<会话名> · 已完成` | 打开这场对话 |
+| 提问、审批、计划确认或操作卡片开始等你 | `<会话名> · 等待你的选择` | 打开这场对话 |
 
-- 通知标题固定是 `DeepSeek Harness`，正文带会话标题和当前状态。
-- 状态文案跟随应用语言：中文、英文、日文、西班牙文、法文、德文、俄文、葡萄牙文。
-- 子智能体的会话不提醒；同一个等待状态重复发布也不会重复弹。
-
-## 为什么这么做
-
-- **看的是状态，不是输出。** 插件读的是应用本来就发布的那份会话状态——驱动侧栏转圈和输入框待办面板的同一个数据源。不轮询对话记录，不额外发模型请求。
-- **"在等你"是一等公民。** 多数提醒脚本只挂"回合结束"，可智能体要你决策时回合根本不会结束。这里提问、审批、计划确认、操作卡片都会提醒，因为它们同属一份待处理交互状态。
-- **点击是真的跳转。** 走的是侧栏用的同一个打开会话接口，直接落到那场对话，不猜 URL。
-- **缺字段就降级，不会失效。** 如果某个 DSH 版本没有统一状态字段，插件退回会话列表的运行状态，完成提醒照常工作。
+标题固定是 `DeepSeek Harness`，正文带会话名和状态。状态文案跟着应用语言走，目前支持八种。子智能体的会话不提醒；同一个等待状态重复发布，也不会重复弹。
 
 ## 安装
 
-1. 到[最新版本](https://github.com/chengzhi43/dsh-desktop-notify/releases/latest)下载 `dsh-desktop-notify.zip`，解压到一个固定目录。
-2. 在 DSH 里打开 **插件 → 添加插件**，选这个目录——根目录下有 `package.json` 的那个。
-3. 刷新一次窗口（`Cmd/Ctrl + R`），然后允许系统通知：macOS 在**系统设置 → 通知 → DeepSeek Harness**，Windows 在**设置 → 系统 → 通知**。
+两种方式，挑省事的那个。
 
-Release 里的 zip 和 git clone 下来的是同一份插件，从源码目录安装也一样。各平台验证项（包括 Windows toast 那个待确认的问题）写在 [docs/WINDOWS-VERIFICATION.md](./docs/WINDOWS-VERIFICATION.md)。
+加索引链接。在 DSH 里打开 **插件 → 发现 → 添加索引源**，粘贴：
 
-## 它怎么工作
+```text
+https://raw.githubusercontent.com/chengzhi43/dsh-desktop-notify/main/index.json
+```
+
+列表里就会出现 `dsh-desktop-notify`，点安装即可。索引里每条都钉死了 commit，装上的是什么，索引里写的就是什么。想先看内容，同一个文件在 [index.json](https://raw.githubusercontent.com/chengzhi43/dsh-desktop-notify/main/index.json) 可以直接打开。
+
+或者解压安装包。从[最新版本](https://github.com/chengzhi43/dsh-desktop-notify/releases/latest)下载 `dsh-desktop-notify.zip`，解压到一个能长期放着的位置，然后 **插件 → 添加插件**，选这个文件夹，根目录里要有 `package.json`。最后按 `Cmd/Ctrl + R` 刷新一次窗口。
+
+装完之后允许系统发通知：macOS 在**系统设置 → 通知 → DeepSeek Harness**，Windows 在**设置 → 系统 → 通知**。
+
+各平台的验证项，包括 Windows toast 那个还没定论的问题，写在 [docs/WINDOWS-VERIFICATION.md](./docs/WINDOWS-VERIFICATION.md)。
+
+## 它读的是什么状态
 
 ```text
 DSH client (open page)
@@ -68,19 +69,21 @@ DSH client (open page)
   fallback: sessions.list          running state only, completions still announced
 ```
 
-插件只保留一张内存里的会话状态表。每次快照和上一次比较：`运行 true → false` 就是回合结束，出现新的待处理交互 key 就是要你做选择。不落盘，卸载插件时订阅一起收掉。
+插件在内存里留一张小表，每次快照和上一次比。`running` 从 true 变 false，就是一个回合结束了；出现新的待处理交互，就是应用在等你回答。不落盘，卸载插件时订阅一起收掉。
 
-## 兼容性与边界
+它读的是应用本来就发布的那份状态，和侧栏的转圈、输入框的待办面板是同一个来源。审批、计划确认这些也能提醒，原因就在这里：它们同属这份状态，插件不用为它们单独写代码。
 
-- 完整体验需要客户端提供 `uiSession.sessionStatus`；只有 `sessions.list` 的版本会退化成"仅完成提醒"，测试里覆盖了这条路径。
-- 通知由已打开的页面发出。关掉窗口或退出应用后不再提醒，虽然后端会话照常跑完。
-- 没有提示音开关、没有单会话静音、没有免打扰时段。同一个等待状态只提醒一次，重复发布保持安静。
-- Linux 依赖桌面的通知服务，以及它是否把点击事件回传给 Electron。
-- 在浏览器标签页里打开 Web 界面时，首次通知会走浏览器的权限申请。
-- Windows 上窗口被收进托盘时，点击可能无法把它提到前台；要拉回前台需要额外调 `dsh://open`，目前没做。
-- 插件不加任何给模型看的文本，不发遥测，不读凭据。
+## 它做不到什么
 
-## 自己验一遍
+- 完整体验需要客户端提供 `uiSession.sessionStatus`。老版本会退回会话列表，那里只有运行状态，所以只能提醒完成，提醒不了"在等你"。
+- 通知由打开的页面发出。关掉窗口或退出应用就没有提醒了，后端该跑完的还是会跑完。
+- 没有提示音开关、单会话静音、免打扰时段。同一个等待状态只提醒一次。
+- Linux 依赖桌面通知服务，也依赖它把点击回传给 Electron。
+- 在浏览器标签页里用，第一次通知会走浏览器的权限申请。
+- Windows 上窗口收进托盘时，点击可能没法把它提到前面。要提起来得调 `dsh://open`，这个插件没有做。
+- 不给模型加任何文本，不发遥测，不读凭据。
+
+## 本地跑一遍
 
 ```bash
 git clone https://github.com/chengzhi43/dsh-desktop-notify.git
@@ -89,14 +92,14 @@ node --check client.js
 node test/harness.cjs
 ```
 
-测试用桩服务替代客户端服务，不需要浏览器、Electron 或 DSH 本体，覆盖：完成提醒、等待提醒、重复抑制、子代理静默、点击跳转、卸载清理、降级路径。CI 在 Linux 上跑同样两条命令。
+测试用桩服务顶替客户端服务，不需要 DOM、Electron 或 DSH 本体。它检查完成提醒、等待提醒、重复抑制、子代理静默、点击跳转、卸载清理和降级路径。CI 在 Linux 上跑同样两条命令，索引文件也一起校验，配置见 [.github/workflows/checks.yml](./.github/workflows/checks.yml)。
 
 ## 参与
 
-中文、英文 issue 都可以。如果要提改动：保持插件无依赖、只在客户端侧运行，状态比较仍然是唯一的状态来源，并在 [CHANGELOG.md](./CHANGELOG.md) 补一行。新增一类提醒，通常意味着应用多了一种待处理交互，而不是这个插件要写更多代码。
+中文、英文 issue 都行。提代码的话：保持插件无依赖、只在客户端侧跑，状态比较仍然是唯一的状态来源，并在 [CHANGELOG.md](./CHANGELOG.md) 补一行。新增一类提醒，通常意味着应用多了一种待处理交互，而不是这个插件要写更多代码。
 
 ## 许可证
 
-[MIT](./LICENSE)。随便用、随便改，也可以塞进你自己的环境里。
+[MIT](./LICENSE)。随便用、随便改，也可以塞进自己的环境里。
 
-如果它对你有用：点 **Star** 让下一个遇到同样问题的人也能搜到，**Watch → Releases** 跟版本更新，少提醒或漏提醒的时候直接开 issue。
+有用的话：点个 Star，Watch releases 跟版本，遇到漏提醒或太吵就直接开 issue。

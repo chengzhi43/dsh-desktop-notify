@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.3
+
+- `index.json`: a plugin-market index for this repository, so DSH can install the plugin from a link
+  (`Plugins → Discover → Add index source`). The entry pins a commit.
+- README rewritten in a plainer voice in both languages, and the install section now lists the index method
+  next to the zip, the folder install, and the from-source path.
+- CI validates the index file, so the Discover entry cannot drift from `package.json`.
+
 ## 1.0.2
 
 - English README with a hero title, badges, and a Star entry point; Chinese moved to `README_CN.md` with a
