@@ -1,0 +1,51 @@
+{
+  "format": 1,
+  "title": {
+    "en": "dsh-desktop-notify",
+    "zh": "dsh-desktop-notify"
+  },
+  "description": {
+    "en": "Desktop notifications for DeepSeek Harness: a turn finished, or the agent is waiting for your choice.",
+    "zh": "DeepSeek Harness 的桌面通知：回合跑完提醒，智能体等你回答也提醒。"
+  },
+  "plugins": [
+    {
+      "name": "dsh-desktop-notify",
+      "title": {
+        "en": "Desktop notifications",
+        "zh": "桌面通知"
+      },
+      "description": {
+        "en": "Shows a system notification when a turn finishes or the agent starts waiting for your choice, and opens that conversation when you click it.",
+        "zh": "回合结束或智能体开始等你做选择时弹系统通知，点击通知直接打开对应会话。"
+      },
+      "icon": "https://raw.githubusercontent.com/chengzhi43/dsh-desktop-notify/main/icon.svg",
+      "author": "chengzhi43",
+      "homepage": "https://github.com/chengzhi43/dsh-desktop-notify",
+      "repository": {
+        "url": "https://github.com/chengzhi43/dsh-desktop-notify"
+      },
+      "metadata": {
+        "keywords": [
+          "dsh",
+          "deepseek-harness",
+          "notification",
+          "desktop"
+        ],
+        "labels": []
+      },
+      "versions": [
+        {
+          "version": "1.0.3",
+          "publishTimestamp": 1794902187,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/chengzhi43/dsh-desktop-notify",
+            "commit": "7827a079e35cc0c98bf5f680179919ab15288a0a"
+          },
+          "engines": {}
+        }
+      ]
+    }
+  ]
+}
