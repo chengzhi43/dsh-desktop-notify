@@ -1,0 +1,53 @@
+{
+  "name": "dsh-desktop-notify",
+  "version": "1.0.0",
+  "description": "Desktop notifications for DeepSeek Harness: a turn finished, or the agent is waiting for your choice",
+  "license": "MIT",
+  "author": "chengzhi43",
+  "type": "module",
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "dsh-plugin",
+    "notification",
+    "desktop",
+    "system-notification"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chengzhi43/dsh-desktop-notify.git"
+  },
+  "bugs": {
+    "url": "https://github.com/chengzhi43/dsh-desktop-notify/issues"
+  },
+  "homepage": "https://github.com/chengzhi43/dsh-desktop-notify#readme",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "icon.svg",
+    "README.md",
+    "LICENSE"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-api-session-controller",
+        "@deepseek-ai/dsh-client-ui-session",
+        "@deepseek-ai/dsh-client-ui-workspace"
+      ]
+    }
+  }
+}

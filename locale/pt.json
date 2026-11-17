@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Notificações da área de trabalho",
+    "description": "Mostra uma notificação do sistema quando um turno termina ou o agente passa a aguardar sua escolha, e clicar nela abre essa conversa. Conversas de subagentes ficam em silêncio. A notificação parte da página aberta, então fechar a janela a interrompe."
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Desktop-Benachrichtigungen",
+    "description": "Zeigt eine Systembenachrichtigung, wenn ein Zug endet oder der Agent auf deine Auswahl wartet; ein Klick öffnet diese Unterhaltung. Unterhaltungen von Teilagenten bleiben still. Die Benachrichtigung stammt von der geöffneten Seite, daher endet sie beim Schließen des Fensters."
+  }
+}

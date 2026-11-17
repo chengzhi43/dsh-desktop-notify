@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Desktop notifications",
+    "description": "Shows a system notification when a turn finishes or the agent starts waiting for your choice, and clicking it opens that conversation. Subagent conversations stay quiet. Notifications come from the open page, so closing the window stops them."
+  }
+}

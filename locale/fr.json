@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Notifications de bureau",
+    "description": "Affiche une notification système lorsqu’un tour se termine ou que l’agent attend votre choix ; un clic ouvre cette conversation. Les conversations de sous-agents restent silencieuses. La notification provient de la page ouverte : fermer la fenêtre l’arrête."
+  }
+}

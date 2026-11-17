@@ -1,0 +1,4 @@
+- insert:
+    - id: dsh-desktop-notify
+      name: 'dsh-desktop-notify'
+      config: {}

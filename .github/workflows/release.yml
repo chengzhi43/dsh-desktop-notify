@@ -1,0 +1,32 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify
+        run: |
+          node --check client.js
+          node --check index.js
+          node test/harness.cjs
+      - name: Pack installable bundle
+        run: |
+          zip -r dsh-desktop-notify.zip \
+            package.json index.js client.js cordis.patch.yml icon.svg README.md LICENSE locale
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dsh-desktop-notify.zip
+          generate_release_notes: true

@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Notificaciones de escritorio",
+    "description": "Muestra una notificación del sistema cuando termina un turno o el agente empieza a esperar tu elección, y al hacer clic se abre esa conversación. Las conversaciones de subagentes no avisan. La notificación sale de la página abierta, así que cerrar la ventana la detiene."
+  }
+}
