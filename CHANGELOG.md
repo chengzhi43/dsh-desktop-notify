@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.1.0 (unreleased)
+## 1.1.0 (2026-11-23)
 
 - The market copy is rewritten in both languages: it now names the exact moments that trigger a notification, the
   `conversation · state` body, the app-icon badge, the silent subagent rows, and the two limits — a closed window and
