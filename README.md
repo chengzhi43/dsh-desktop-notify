@@ -1,4 +1,4 @@
-<!-- README_SYNC: source=working-tree; updated=2026-11-17 -->
+<!-- README_SYNC: source=working-tree; updated=2026-11-18 -->
 
 <p align="center">
   <a href="./README_CN.md">简体中文</a> · English
@@ -27,9 +27,17 @@
 
 </div>
 
-A session commonly runs for several minutes. While the window is in the background, two events matter: the turn finishes, or the agent stops and waits for an answer. The plugin delivers both through the system notification center, and a click returns to that conversation.
+A session commonly runs for several minutes. While the window is in the background, two events matter: the turn finishes, or the agent stops and waits for an answer. The plugin delivers both through the system notification center, and a click returns to that conversation. A notification the user has not come back for is also counted on the app icon, so a glance at the Dock shows how many conversations are waiting.
 
 It is a client-side bundle: one directory, no dependencies, no build step, no network requests, and nothing written to disk.
+
+## Screenshots
+
+<p align="center">
+  <img src="./docs/screenshots/notifications-en.jpg" width="820" alt="Two system notifications from DeepSeek Harness: one conversation finished, one waiting for your choice">
+</p>
+
+The plugin's whole output is these two notifications — a turn finished, and the agent starting to wait for your choice. The title stays `DeepSeek Harness`; the body is `<conversation> · <state>`.
 
 ## Notification content
 
@@ -39,6 +47,14 @@ It is a client-side bundle: one directory, no dependencies, no build step, no ne
 | A question, approval, plan review, or action card starts waiting | `<conversation> · waiting for your choice` | Opens that conversation |
 
 The title is always `DeepSeek Harness`; the body carries the conversation name and the state. The state text follows the application language, currently eight of them. Subagent conversations are excluded, and a pending request that is published again does not produce a second notification.
+
+## App-icon badge
+
+While the window is in the background, every conversation holding an unseen notification adds one to the app icon: a numbered Dock badge on macOS, a taskbar overlay on Windows, a launcher badge on Linux. Two conversations waiting show `2`. A second notification for the same conversation replaces the first instead of stacking, so the number always matches the notifications on screen.
+
+The badge clears when the window comes back — the window gaining focus, or a click on a notification — because nothing is unseen at that point. The carrier is the standard Badging API (`navigator.setAppBadge` and `navigator.clearAppBadge`), which Electron maps onto the application icon. A Client without that API keeps its notifications and simply carries no badge.
+
+Nothing is counted while the window has your attention, and no counter outlives the window: the plugin holds the set in memory and writes nothing to disk.
 
 ## Install
 
@@ -77,6 +93,8 @@ DSH client (open page)
     dsh-desktop-notify             diff one snapshot against the previous one
       Notification                 "<title> · finished" / "<title> · waiting for your choice"
         click                      uiWorkspace.openSession(sessionId)
+      navigator.setAppBadge(n)     n conversations unseen while the window is away
+        focus / visibilitychange   navigator.clearAppBadge()
   fallback: sessions.list          running state only, completions still announced
 ```
 
@@ -90,6 +108,8 @@ The state it reads is the one the application already publishes, the same source
 - Notifications originate from the open page. When the window is closed or the application quits, no notification is delivered, although the session continues to run on the host.
 - There is no sound setting, no per-conversation mute, and no quiet hours. A pending request notifies once, and repeated publication of the same state stays silent.
 - On Linux, delivery depends on the desktop notification service and on whether it reports clicks back to Electron.
+- The badge needs an icon to draw on. Inside the desktop app Electron maps it to the Dock badge, the Windows taskbar
+  overlay, or the Linux launcher badge; macOS additionally requires notification permission before the badge renders.
 - In a browser tab, the first notification passes through the browser permission prompt.
 - On Windows, a window minimized to the tray may not come forward on click. Raising it requires a `dsh://open` call, which this plugin does not make.
 - The plugin adds no model-facing text, sends no telemetry, and reads no credentials.
@@ -103,7 +123,7 @@ node --check client.js
 node test/harness.cjs
 ```
 
-The harness replaces the client services with stubs, so it runs without a DOM, Electron, or DSH. It covers completion, pending choice, duplicate suppression, subagent exclusion, click navigation, teardown, and the fallback path. CI runs the same commands on Linux and validates the index file; see [.github/workflows/checks.yml](./.github/workflows/checks.yml).
+The harness replaces the client services with stubs, so it runs without a DOM, Electron, or DSH. It covers completion, pending choice, duplicate suppression, subagent exclusion, click navigation, badge counting and clearing, teardown, and both degraded paths. CI runs the same commands on Linux and validates the index file; see [.github/workflows/checks.yml](./.github/workflows/checks.yml).
 
 ## Contributing
 

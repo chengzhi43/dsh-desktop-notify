@@ -1,7 +1,7 @@
 {
   "name": "dsh-desktop-notify",
-  "version": "1.0.4",
-  "description": "Desktop notifications for DeepSeek Harness: a turn finished, or the agent is waiting for your choice",
+  "version": "1.1.0",
+  "description": "Desktop notifications for DeepSeek Harness: a banner when a turn finishes or the agent needs your choice, a click to return to that conversation, and unread ones counted on the app icon",
   "license": "MIT",
   "author": "chengzhi43",
   "type": "module",
@@ -36,6 +36,7 @@
     "README.md",
     "LICENSE",
     "docs",
+    "screenshots.json",
     "README_CN.md",
     "CHANGELOG.md",
     "index.json"

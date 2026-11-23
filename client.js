@@ -4,8 +4,9 @@
  * The app already publishes per-conversation UI status: whether a turn runs and
  * the pending interaction awaiting the user. This module turns the two
  * transitions that matter into system notifications — a turn finishing, and the
- * agent starting to wait for a choice — and opens that conversation when the
- * notification is clicked.
+ * agent starting to wait for a choice — opens that conversation when the
+ * notification is clicked, and badges the app icon with the number of
+ * conversations that reported while the user was looking elsewhere.
  *
  * No Host work is involved, so the same bundle runs on macOS, Windows, and the
  * browser-served Web GUI.
@@ -56,8 +57,115 @@ window.__ModuleLoader__.load({
       ctx.logger?.warn?.(`desktop-notify: ${message}`)
     }
 
-    /** Raise one system notification and wire its click to conversation navigation. */
-    function announce(ctx, uiWorkspace, body, sessionId) {
+    /**
+     * Whether the user is looking at the app right now. A hidden window and a
+     * window behind another app both count as looking away, which is when a
+     * notification has to be visible from the icon alone.
+     */
+    function isWatching() {
+      try {
+        if (typeof document === 'undefined') return true
+        if (document.visibilityState === 'hidden') return false
+        if (typeof document.hasFocus === 'function' && !document.hasFocus()) return false
+        return true
+      } catch (_error) {
+        return true
+      }
+    }
+
+    /**
+     * App-icon badge: how many conversations pushed a notification the user has
+     * not come back for.
+     *
+     * The carrier is the Badging API. Electron maps it onto the app icon — a
+     * numbered Dock badge on macOS, a taskbar overlay on Windows, a launcher
+     * badge on Linux — and a browser without the API simply keeps the
+     * notifications, so the badge never becomes a second failure mode.
+     */
+    function createBadge(ctx) {
+      const api = typeof navigator === 'undefined' ? undefined : navigator
+      const usable = typeof api?.setAppBadge === 'function' && typeof api?.clearAppBadge === 'function'
+      /**
+       * Conversations with an unseen notification. One entry per notification
+       * tag, which is the conversation, so the number matches what the platform
+       * shows: a second notification for the same conversation replaces the
+       * first instead of stacking.
+       */
+      const pending = new Set()
+      /** Count already pushed, so a repeated state stays out of the platform. */
+      let applied = 0
+      let broken = false
+
+      const fail = (error) => {
+        broken = true
+        applied = 0
+        warnOnce(ctx, 'badge', `the app-icon badge is unavailable: ${String(error)}`)
+      }
+
+      /** Push the current count, skipping unchanged values and broken platforms. */
+      const publish = () => {
+        if (!usable || broken) return
+        const count = pending.size
+        if (count === applied) return
+        applied = count
+        try {
+          Promise.resolve(count === 0 ? api.clearAppBadge() : api.setAppBadge(count)).catch(fail)
+        } catch (error) {
+          fail(error)
+        }
+      }
+
+      return {
+        /** Count one notification that has just been raised. */
+        note(sessionId) {
+          // A notification raised while the user watches the window is already
+          // read, so it never reaches the icon.
+          if (!usable || broken || isWatching()) return
+          pending.add(sessionId)
+          publish()
+        },
+        /** Forget one conversation, once its notification was opened. */
+        forget(sessionId) {
+          if (!pending.delete(sessionId)) return
+          publish()
+        },
+        /** The user is back at the window: nothing is unseen any more. */
+        settle() {
+          if (pending.size === 0) return
+          pending.clear()
+          publish()
+        },
+      }
+    }
+
+    /**
+     * Watch for the moment the user comes back, and drop the badge there.
+     * Registered for the lifetime of the plugin.
+     */
+    function watchReturn(ctx, badge) {
+      ctx.effect(() => {
+        const view = typeof window === 'undefined' ? undefined : window
+        const page = typeof document === 'undefined' ? undefined : document
+        if (typeof view?.addEventListener !== 'function') return
+        const onFocus = () => { badge.settle() }
+        const onVisibility = () => {
+          if (page.visibilityState === 'visible') badge.settle()
+        }
+        view.addEventListener('focus', onFocus)
+        page?.addEventListener?.('visibilitychange', onVisibility)
+        return () => {
+          view.removeEventListener('focus', onFocus)
+          page?.removeEventListener?.('visibilitychange', onVisibility)
+        }
+      }, 'desktop-notify: app-icon badge')
+    }
+
+    /**
+     * Raise one system notification and wire its click to conversation navigation.
+     * @param notice - body, conversation id, and the badge hooks for both ends.
+     */
+    function announce(ctx, uiWorkspace, notice) {
+      const { body, sessionId } = notice
       if (typeof Notification === 'undefined') {
         warnOnce(ctx, 'unsupported', 'this Client has no system notification API')
         return
@@ -75,7 +183,9 @@ window.__ModuleLoader__.load({
             tag: `dsh-desktop-notify:${sessionId}`,
             silent: false,
           })
+          notice.shown?.()
           notification.onclick = () => {
+            notice.clicked?.()
             try {
               uiWorkspace.openSession(sessionId)
             } catch (error) {
@@ -124,6 +234,9 @@ window.__ModuleLoader__.load({
         }
         const t = locale === undefined ? (key) => key : locale.bind(NS)
 
+        const badge = createBadge(ctx)
+        watchReturn(ctx, badge)
+
         /**
          * Last observed state per conversation. A comparison baseline only:
          * every value is rederived from the app's own snapshot each time.
@@ -147,10 +260,16 @@ window.__ModuleLoader__.load({
             if (!primed || before === undefined) continue
             const label = labelOf(sessions, sessionId)
             if (label === undefined) continue
+            const notice = (suffix) => ({
+              body: `${label} · ${suffix}`,
+              sessionId,
+              shown: () => { badge.note(sessionId) },
+              clicked: () => { badge.forget(sessionId) },
+            })
             if (before.running && !running) {
-              announce(ctx, uiWorkspace, `${label} · ${t('complete')}`, sessionId)
+              announce(ctx, uiWorkspace, notice(t('complete')))
             } else if (interactionKey !== undefined && interactionKey !== before.interactionKey) {
-              announce(ctx, uiWorkspace, `${label} · ${t('choice')}`, sessionId)
+              announce(ctx, uiWorkspace, notice(t('choice')))
             }
           }
           for (const sessionId of [...previous.keys()]) {

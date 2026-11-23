@@ -1,6 +1,6 @@
 {
   "meta": {
     "title": "Desktop notifications",
-    "description": "Shows a system notification when a turn finishes or the agent starts waiting for your choice, and clicking it opens that conversation. Subagent conversations stay quiet. Notifications come from the open page, so closing the window stops them."
+    "description": "Raises one system notification when a turn finishes, or when the agent starts waiting for your choice — a question, an approval, a plan review, or an action card. The body is the conversation name and the state, and a click opens that conversation. Notifications you have not opened are counted on the app icon: a Dock badge on macOS, a taskbar overlay on Windows, a launcher badge on Linux. The count clears when the window regains focus, the page becomes visible again, or a notification is clicked, and a second report from the same conversation replaces its notification instead of stacking. Subagent conversations stay quiet, and nothing is counted while the window has your attention. The plugin changes no conversation content, sends no network requests, and writes nothing to disk, so turning it off restores the notification-free state. Notifications come from the open page, so closing the window stops them; a denied system permission warns once in the console."
   }
 }

@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.1.0 (unreleased)
+
+- The market copy is rewritten in both languages: it now names the exact moments that trigger a notification, the
+  `conversation · state` body, the app-icon badge, the silent subagent rows, and the two limits — a closed window and
+  a denied system permission. The plugin-detail text in `locale/*.json` carries the same facts, plus where the
+  notification is triggered and what turning the plugin off restores.
+- `docs/screenshots/` adds the two notifications this plugin produces, in English and Chinese, and both READMEs show
+  them above the notification table.
+- `screenshots.json` declares those images to the community catalog, which reads the file from this repository
+  instead of a hand-maintained list over there.
+- The app icon now carries a badge while a notification stays unseen: one per conversation, numbered like the
+  Dock badge on macOS, the taskbar overlay on Windows, and the Linux launcher badge. The count comes from the
+  standard Badging API, which Electron maps onto the application icon.
+- The badge clears when the window regains focus, when the page becomes visible again, or when a notification is
+  clicked. A conversation reporting twice replaces its notification instead of raising the number twice.
+- Nothing is counted while the window has focus, and a Client without the Badging API keeps notifying without a
+  badge. Both cases are covered by `test/harness.cjs`.
+
 ## 1.0.4
 
 - Install section split into numbered methods with headings, and both install text and limitations rewritten

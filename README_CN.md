@@ -1,4 +1,4 @@
-<!-- README_SYNC: source=working-tree; updated=2026-11-17 -->
+<!-- README_SYNC: source=working-tree; updated=2026-11-18 -->
 
 <p align="center">
   简体中文 · <a href="./README.md">English</a>
@@ -27,9 +27,17 @@
 
 </div>
 
-一个会话通常要运行数分钟。窗口处于后台时，有两件事需要你知道：回合结束，或智能体停下来等待回答。插件把这两件事交给系统通知中心，点击通知即可回到对应会话。
+一个会话通常要运行数分钟。窗口处于后台时，有两件事需要你知道：回合结束，或智能体停下来等待回答。插件把这两件事交给系统通知中心，点击通知即可回到对应会话。你没点开的那条通知还会记到应用图标上，扫一眼 Dock 就知道有几个会话在等你。
 
 它只是一个客户端插件：一个目录，没有依赖，不需要构建，不发起网络请求，也不写入磁盘。
+
+## 截图
+
+<p align="center">
+  <img src="./docs/screenshots/notifications-zh.jpg" width="820" alt="DeepSeek Harness 弹两条系统通知：一个会话已完成，一个正在等待你的选择">
+</p>
+
+插件的输出就是这两条通知：回合结束，以及智能体开始等你做选择。标题固定为 `DeepSeek Harness`，正文是 `<会话名> · <状态>`。
 
 ## 通知内容
 
@@ -39,6 +47,14 @@
 | 提问、审批、计划确认或操作卡片进入等待 | `<会话名> · 等待你的选择` | 打开该会话 |
 
 标题固定为 `DeepSeek Harness`，正文包含会话名与状态。状态文案跟随应用语言，目前支持八种。子智能体会话不提醒；同一等待状态重复发布时不会再次通知。
+
+## 应用图标角标
+
+窗口在后台时，每个留着未点开通知的会话都会给应用图标加一：macOS 是带数字的 Dock 角标，Windows 是任务栏角标，Linux 是启动器角标。两个会话在等待就显示 `2`。同一会话再次通知会替换掉上一条，而不是叠加，所以角标数字与屏幕上的通知始终一致。
+
+窗口回来时角标消失——窗口获得焦点，或你点了某条通知，此时已经没有未读内容。承载它的是标准 Badging API（`navigator.setAppBadge` 与 `navigator.clearAppBadge`），Electron 把它映射到应用图标上。缺少该 API 的客户端照常通知，只是没有角标。
+
+窗口在你眼前时不做计数，也不落盘：计数集合只存在于内存中。
 
 ## 安装
 
@@ -77,6 +93,8 @@ DSH client (open page)
     dsh-desktop-notify             diff one snapshot against the previous one
       Notification                 "<title> · finished" / "<title> · waiting for your choice"
         click                      uiWorkspace.openSession(sessionId)
+      navigator.setAppBadge(n)     窗口在后台时，累计未点开的会话数
+        focus / visibilitychange   navigator.clearAppBadge()
   fallback: sessions.list          running state only, completions still announced
 ```
 
@@ -90,6 +108,7 @@ DSH client (open page)
 - 通知由已打开的页面发出。窗口关闭或应用退出后不再发送通知，但会话仍在主机侧继续运行。
 - 没有提示音设置、单会话静音和免打扰时段。同一等待状态通知一次，重复发布保持静默。
 - 在 Linux 上，通知能否送达取决于桌面通知服务，也取决于该服务是否把点击事件回传给 Electron。
+- 角标需要一个可以绘制的图标。在桌面端，Electron 把它映射到 Dock 角标、Windows 任务栏角标或 Linux 启动器角标；macOS 还需要先允许通知，角标才会出现。
 - 在浏览器标签页中使用时，首次通知会经过浏览器权限申请。
 - 在 Windows 上，窗口最小化到托盘后，点击通知可能无法将窗口置前。置前需要调用 `dsh://open`，本插件未实现该调用。
 - 插件不向模型添加任何文本，不发送遥测，不读取凭据。
@@ -103,7 +122,7 @@ node --check client.js
 node test/harness.cjs
 ```
 
-测试用桩实现替代客户端服务，因此不需要 DOM、Electron 或 DSH 本体。覆盖范围包括回合结束提醒、等待提醒、重复抑制、子智能体排除、点击跳转、卸载清理与降级路径。CI 在 Linux 上执行同样的命令，并校验索引文件，配置见 [.github/workflows/checks.yml](./.github/workflows/checks.yml)。
+测试用桩实现替代客户端服务，因此不需要 DOM、Electron 或 DSH 本体。覆盖范围包括回合结束提醒、等待提醒、重复抑制、子智能体排除、点击跳转、角标计数与清除、卸载清理，以及两条降级路径。CI 在 Linux 上执行同样的命令，并校验索引文件，配置见 [.github/workflows/checks.yml](./.github/workflows/checks.yml)。
 
 ## 参与贡献
 
